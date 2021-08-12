@@ -1,0 +1,381 @@
+---
+title: 'Case study: Cyclistic report'
+author: "Ben Tunnicliff"
+date: "11/08/2021"
+output: html_document
+---
+
+
+## Background
+
+* The company is a fictional bike-share company based in Chicago, named Cyclistic. The company maintains a fleet of more than 5800 bicycles and 600 docking stations. They set themselves apart by offering different types of bikes such as reclining bikes, hand tricycles, and cargo bikes in order to make bike sharing more inclusive to people with diabilities and other riders who are unable to use a stadard bicycle.
+* Cyclistic offers a few options for riders in terms of pricing plans. They offer single-ride passes, full-day passes, and annual memberships. those who purchase annual memberships are referred to as members, the others are referred to as casual riders.
+* Cyclistic finance analysts have concluded that annual members are much more profitable than casual riders, and it is believed that maximising the number of annual members will be key to the company's future growth.
+* The current marketing strategy revolves around building general awareness and appealing to broad consumer segments.
+
+## Goals/Business tasks
+
+* The goal of the marketing team is to design marketing strategies aimed at converting casual riders into annual members.
+* My task is to answer the question: **How do annual members and casual riders use Cyclistic bikes differently?**
+
+## Preparing data
+
+*Data source* previous 12 months (07/2020 to 06/2021) of Cyclistic trip data downloaded from [here](https://divvy-tripdata.s3.amazonaws.com/index.html)
+
+* 12 .csv files.
+* 13 variables including start/end station names and ID numbers, rideable types, start and end times etc.
+
+*Notes*
+
+* The datasets have a different name because Cyclistic is a fictional company.
+* The data has been made available by Motivate International Inc. under this [license.](https://www.divvybikes.com/data-license-agreement)
+* This is public data.
+* The data is unbiased, original and is not missing any important information.
+
+## Processing and preparing data
+
+For this analysis I will be using R, making use of the tidyverse and lubridate packages
+```{r loading packages, echo=TRUE, message=FALSE, warning=FALSE}
+#loading necessary packages.
+library(tidyverse)
+library(lubridate)
+```
+
+### Collecting the data
+```{r Loading data}
+#Importing all datasets
+divvy202007 <- read.csv("202007-divvy-tripdata.csv")
+divvy202008 <- read.csv("202008-divvy-tripdata.csv")
+divvy202009 <- read.csv("202009-divvy-tripdata.csv")
+divvy202010 <- read.csv("202010-divvy-tripdata.csv")
+divvy202011 <- read.csv("202011-divvy-tripdata.csv")
+divvy202012 <- read.csv("202012-divvy-tripdata.csv")
+divvy202101 <- read.csv("202101-divvy-tripdata.csv")
+divvy202102 <- read.csv("202102-divvy-tripdata.csv")
+divvy202103 <- read.csv("202103-divvy-tripdata.csv")
+divvy202104 <- read.csv("202104-divvy-tripdata.csv")
+divvy202105 <- read.csv("202105-divvy-tripdata.csv")
+divvy202106 <- read.csv("202106-divvy-tripdata.csv")
+```
+
+### Wrangling data and combining into a single file
+
+Examining the structure of each dataset to look for inconsistencies.
+```{r structure check}
+str(divvy202007)
+str(divvy202008)
+str(divvy202009)
+str(divvy202010)
+str(divvy202011)
+str(divvy202012)
+str(divvy202101)
+str(divvy202102)
+str(divvy202103)
+str(divvy202104)
+str(divvy202105)
+str(divvy202106)
+```
+All of the column names match, however there are some variables that are under different classes which will need to be corrected.
+
+```{r correcting formats}
+#converting ride_id and rideable_type to character so that they stack correctly. also converting start and end station ids to int for 202012 onward.
+divvy202007 <- mutate(divvy202007, ride_id = as.character(ride_id), rideable_type = as.character(rideable_type))
+divvy202008 <- mutate(divvy202008, ride_id = as.character(ride_id), rideable_type = as.character(rideable_type))
+divvy202009 <- mutate(divvy202009, ride_id = as.character(ride_id), rideable_type = as.character(rideable_type))
+divvy202010 <- mutate(divvy202010, ride_id = as.character(ride_id), rideable_type = as.character(rideable_type))
+divvy202011 <- divvy202011 %>% mutate(ride_id = as.character(ride_id), rideable_type = as.character(rideable_type))
+divvy202012 <- divvy202012 %>% mutate(ride_id = as.character(ride_id), rideable_type = as.character(rideable_type), start_station_id = as.integer(start_station_id), end_station_id = as.integer(end_station_id))
+divvy202101 <- divvy202101 %>% mutate(ride_id = as.character(ride_id), rideable_type = as.character(rideable_type), start_station_id = as.integer(start_station_id), end_station_id = as.integer(end_station_id))
+divvy202102 <- divvy202102 %>% mutate(ride_id = as.character(ride_id), rideable_type = as.character(rideable_type), start_station_id = as.integer(start_station_id), end_station_id = as.integer(end_station_id))
+divvy202103 <- divvy202103 %>% mutate(ride_id = as.character(ride_id), rideable_type = as.character(rideable_type), start_station_id = as.integer(start_station_id), end_station_id = as.integer(end_station_id))
+divvy202104 <- divvy202104 %>% mutate(ride_id = as.character(ride_id), rideable_type = as.character(rideable_type), start_station_id = as.integer(start_station_id), end_station_id = as.integer(end_station_id))
+divvy202105 <- divvy202105 %>% mutate(ride_id = as.character(ride_id), rideable_type = as.character(rideable_type), start_station_id = as.integer(start_station_id), end_station_id = as.integer(end_station_id))
+divvy202106 <- divvy202106 %>% mutate(ride_id = as.character(ride_id), rideable_type = as.character(rideable_type), start_station_id = as.integer(start_station_id), end_station_id = as.integer(end_station_id))
+```
+
+Now that the formatting is consistent the data can be merged into one table, and unnecessary data can be removed.
+
+```{r binding data together}
+#Stacking individual month's data frames into one large data frame, and removing longitude and latitude columns.
+all_trips <- bind_rows(divvy202007, divvy202008, divvy202009, divvy202010, divvy202011, divvy202012, divvy202101,
+                       divvy202102, divvy202103, divvy202104, divvy202105, divvy202106)
+
+
+all_trips <- all_trips %>% select(-c(start_lat, start_lng, end_lat, end_lng))
+```
+
+### Cleaning and adding new data
+
+Starting by looking at the dimensions and structure of the new dataset.
+
+```{r all_trips dimensions}
+str(all_trips)
+```
+* The all_trips dataset has 4460151 rows and 9 columns.
+* A few more columns will be added to make the analysis more in depth.
+
+Columns will be added for the date, day, month, year, day of the week, and length of each ride.
+```{r adding time data}
+#adding columns to list the day, month, and year of each ride.
+all_trips$date <- as.Date(all_trips$started_at)
+all_trips$month <- format(as.Date(all_trips$date), "%B")
+all_trips$day <- format(as.Date(all_trips$date), "%d")
+all_trips$year <- format(as.Date(all_trips$date), "%y")
+all_trips$day_of_week <- format(as.Date(all_trips$date), "%a")
+
+#adding a ride length column (in seconds)
+all_trips$ride_length <- difftime(all_trips$ended_at,all_trips$started_at)
+
+#checking the structure of the added columns.
+str(all_trips)
+
+#converting ride length to a numeric value for calculations.
+all_trips$ride_length <- as.numeric(as.character(all_trips$ride_length))
+is.numeric(all_trips$ride_length)
+str(all_trips)
+```
+
+In the dataset there are instances of "bad data" such as trips with negative ride length, as well as bikes being taken for quality tests which need to be removed. A new data frame will be created for this.
+
+```{r removing bad data, warning=FALSE}
+#removing "bad" data, where bikes were taken out of docks for quality checks, or ride_length was negative.
+all_trips_v2 <- all_trips[!(all_trips$start_station_name == "HQ QR" | all_trips$ride_length < 0),]
+```
+
+Another column will be added to include the start time of each ride for further analysis.
+
+```{r start time column, warning=FALSE}
+all_trips_v2$start_time <- as.POSIXct(all_trips_v2$started_at, "%Y-%m-%d %H:%M:%S")
+str(all_trips_v2)
+```
+The all_trips_v2 dataset has 4459772 rows with 16 columns, and it is now cleaned and ready for analysis.
+
+## Analysis of the data
+
+Starting at a broad level by taking the mean of ride length, as well as the number of rides for members and casual riders.
+
+```{r mean ride time and memebr/casual table}
+#Getting descriptive statistics.
+all_trips_v2 %>% summarise(mean_ride_length = mean(ride_length))
+table(all_trips_v2$member_casual)
+```
+From the table we can see that members make up around 57% of total rides. We can then look at the mean ride length for both members and casual riders.
+```{r aggregate by member/casual}
+#comparing members and casual users
+aggregate(all_trips_v2$ride_length ~ all_trips_v2$member_casual, FUN = mean)
+```
+
+We can also look at average ride length for members and casual riders for each day of the week.
+```{r Member/casual by day of week}
+#change the days of the week to be in order.
+all_trips_v2$day_of_week <- ordered(all_trips_v2$day_of_week, levels=c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))
+
+#average ride time by day for members vs casual users
+aggregate(all_trips_v2$ride_length ~ all_trips_v2$member_casual + all_trips_v2$day_of_week, FUN = mean)
+```
+
+We can then create a table showing average ride length and number of rides for each day of the week, for members and casual riders.
+```{r ride length/average rides by day of week, warning= FALSE, message=FALSE}
+# analyze ridership data by type and weekday
+all_trips_v2 %>% 
+  mutate(weekday = wday(started_at, label = TRUE)) %>% 
+  group_by(member_casual, weekday) %>% 
+  summarise(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, weekday)
+```
+
+From this table it can be seen that:
+
+* The number of rides through the week for members is relatively consistent, while for casual riders there are more rides on weekend days.
+* The average ride length for members is much lower than the average ride length for casual riders.
+* The average ride length for casual riders is higher on weekends.
+
+## Visualising the data
+
+### Number of rides and Average ride length for each day of the week.
+```{r ride length/number of rides week day, message=FALSE, warning=FALSE}
+#visualise number of rides by rider type
+all_trips_v2 %>% 
+  mutate(weekday = wday(started_at, label = TRUE)) %>% 
+  group_by(member_casual, weekday) %>% 
+  summarise(number_of_rides = n()
+            ,average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, weekday)  %>% 
+  ggplot(aes(x = weekday, y = number_of_rides, fill = member_casual)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
+  labs(title = "Number of rides for casual riders vs members for each day of the week",
+       caption = "Data from: Divvy bikes data, Motivate International Inc; Jan 1 2020 to Dec 31 2020",
+       x = "Day of the week",
+       y = "Number of bike rides",
+       fill = "Member type")
+
+#Create a visualisation for average ride length.
+all_trips_v2 %>% 
+  mutate(weekday = wday(started_at, label = TRUE)) %>% 
+  group_by(member_casual, weekday) %>% 
+  summarise(number_of_rides = n()
+            ,average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, weekday)  %>% 
+  ggplot(aes(x = weekday, y = average_duration, fill = member_casual)) +
+  geom_col(position = "dodge") +
+  labs(title = "Average duration of bike rides for each day of the week, by member type",
+       caption = "Data from: Divvy bikes data, Motivate International Inc; Jan 1 2020 to Dec 31 2020",
+       x = "Day of the week",
+       y = "Average ride duration (seconds)",
+       fill = "Member type")
+```
+
+These two charts show the same thing as the previous table:
+
+* Members tend to have a consistent number of rides for each day while casual riders use the service more on weekends.
+* Average ride length for members is much lower than casual riders.
+* For casual riders the average ride length peaks on weekends.
+* Casual riders appear to use the service more than members on weekends.
+
+### Number of rides and Average ride length for each month.
+```{r month data, warning=FALSE, message=FALSE}
+#Rider behaviour by month
+all_trips_v2$month <- ordered(all_trips_v2$month, levels = c("January", "February", "March", "April",
+                                                             "May", "June", "July", "August", "September", "October",
+                                                             "November", "December"))
+
+
+#Creating visualisations for number of rides and average ride length by month
+all_trips_v2 %>%
+  group_by(member_casual, month) %>%
+  summarise(number_of_rides = n()) %>%
+  ggplot(aes(x = month, y = number_of_rides, fill = member_casual)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
+  theme(axis.text.x = element_text(angle = 45)) +
+  labs(title = "Number of rides for each month, by member type",
+       caption = "Data from: Divvy bikes data, Motivate International Inc; Jan 1 2020 to Dec 31 2020",
+       x = "Month",
+       y = "Number of rides",
+       fill = "Member type")
+
+all_trips_v2 %>%
+  group_by(member_casual, month) %>%
+  summarise(number_of_rides = n(),
+            average_duration = mean(ride_length)) %>%
+  ggplot(aes(x = month, y = average_duration, fill = member_casual)) +
+  geom_col(position = "dodge") +
+  theme(axis.text.x = element_text(angle = 45)) +
+  labs(title = "Average ride duration for each month, by member type",
+       caption = "Data from: Divvy bikes data, Motivate International Inc; Jan 1 2020 to Dec 31 2020",
+       x = "Month",
+       y = "Average ride duration (seconds)",
+       fill = "Member type")
+```
+
+Several insights can be gained from these charts:
+
+* Casual riders' usage of the service starts to increase in the Spring time, and peaks in the Summer months before decreasing when heading into Winter.
+* Members tend to follow the same pattern, but with less change through the months when compared to casual riders.
+* The average ride length for casual riders is much higher than average ride length for members.
+* Casual riders' ride length increases in the Spring and Summer months and decreases towards Winter.
+
+### Number of rides beginning at each hour of the day.
+```{r Hourly rides, warning=FALSE, message=FALSE}
+all_trips_v2 %>%
+  group_by(hour_of_day = hour(round_date(start_time, 'hour'))) %>%
+  group_by(hour_of_day, member_casual) %>%
+  summarise(number_of_rides = n(), .groups = 'drop') %>%
+  ggplot(aes(x = hour_of_day, y = number_of_rides, fill = member_casual)) +
+  geom_col(position = 'dodge') +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
+  scale_x_continuous(breaks = 0:23) +
+  labs(title = "Number of rides for each hour of the day, by member type",
+       caption = "Data from: Divvy bikes data, Motivate International Inc; Jan 1 2020 to Dec 31 2020",
+       x = "Time of day (Hour)",
+       y = "Number of rides",
+       fill = "Member type")
+```
+
+We can see from this chart that:
+
+* The start times for members and casual riders begins to increase in the morning and peaks in the evening before decreasing overnight.
+* Members ride start time increases heavily around 7-8am and 5-6pm which could mean that members are mostly using the service to commute to and from work.
+* Casual riders seem to use the service more in the afternoon/evening.
+
+### Most frequently used start stations for members and casual riders.
+```{r start station frequency, warning=FALSE, message=FALSE}
+# Creating a plot of popular start stations for members and casual riders.
+all_trips_v2 %>%
+  group_by(start_station_name, member_casual) %>%
+  summarise(number_of_rides = n(), .groups = 'drop') %>%
+  filter(start_station_name != "", member_casual == "member") %>%
+  arrange(-number_of_rides) %>%
+  head(n = 20) %>%
+  ggplot(aes(x = reorder(start_station_name, number_of_rides), y = number_of_rides)) +
+  geom_col() +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
+  coord_flip() +
+  labs(title = "Top 20 start stations for members",
+       caption = "Data from: Divvy bikes data, Motivate International Inc; Jan 1 2020 to Dec 31 2020",
+       x = "Station name",
+       y = "Number of rides")
+
+all_trips_v2 %>%
+  group_by(start_station_name, member_casual) %>%
+  summarise(number_of_rides = n(), .groups = 'drop') %>%
+  filter(start_station_name != "", member_casual == "casual") %>%
+  arrange(-number_of_rides) %>%
+  head(n = 20) %>%
+  ggplot(aes(x = reorder(start_station_name, number_of_rides), y = number_of_rides)) +
+  geom_col() +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
+  coord_flip() +
+  labs(title = "Top 20 start stations for casual riders",
+       caption = "Data from: Divvy bikes data, Motivate International Inc; Jan 1 2020 to Dec 31 2020",
+       x = "Station name",
+       y = "Number of rides")
+```
+
+For members it should be noted that:
+
+* A lot more members started trips at Clark St & Elm St than the next highest stations.
+* The rest of the top 10 stations are relatively consistent.
+
+For casual riders it should be noted that:
+
+* The top 3 casual rider start stations have much more trips started than the others in the list.
+* Theater on the lake is in the top 5 start stations for both members and casual riders.
+
+### Different rideable types for members and casual riders.
+```{r rideable types, warning=FALSE, message=FALSE}
+#Plotting usage of different rideable types for members and casual riders.
+all_trips_v2 %>%
+  group_by(rideable_type, member_casual) %>%
+  summarise(number_of_rides = n(), .group = 'drop') %>%
+  ggplot(aes(x = member_casual, y = number_of_rides, fill = member_casual)) +
+  geom_col(position = 'dodge') +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
+  facet_wrap(~rideable_type) +
+  labs(title = "Usage of different rideable types: Members vs. Casual riders",
+       caption = "Data from: Divvy bikes data, Motivate International Inc; Jan 1 2020 to Dec 31 2020",
+       x = "",
+       y = "Number of rides",
+       fill = 'Member type')
+```
+
+This chart gives a few pieces of information:
+
+* The docked bike is the most popular bike type among both members and casual riders.
+* The classic bike is popular among members but is not very popular among casual riders.
+* The electric bike is slightly more popular than the classic bike among casual riders, and is the least poular option for members.
+
+### Key findings
+
+* The docked bike is very popular among casual riders.
+* Casual riders usage of the service increase substantially in the Summer months, and on weekends in general.
+* The afternoon and evening time periods are when the number of casual riders is highest.
+* The top three start stations for casual riders are Skeeter Dr & Grand Ave, Lake Shore Dr & Monroe St, and Millenium park.
+* It would appear that casual riders tend to use the service for leisure rides with some using it for commutes etc. while members seem to use the service mostly for work commutes with some leisure rides.
+
+## Reccomended actions
+
+* Advertise membership to casual riders, mainly placing advertsements at heavy traffic starting stations (top 10 possibly).
+* Offering a membership discount through Summer or on holiday weekends could be a good way to get more casual riders to sign up for memberships.
+* Develop a marketing campaign focussing on the benefits of riding Cyclistic bikes as a way of getting to and from work or other repeat destinations as a way to get casual riders to use the service more, and possibly getting them to sign up for membership.
