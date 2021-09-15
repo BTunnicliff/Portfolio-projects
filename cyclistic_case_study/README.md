@@ -1,5 +1,11 @@
 # Cyclistic Case Study
 
+### tl;dr
+* Case study for a fictional bike-share company wanting to find ways to convert casual users into subscribers/members.
+* I used R to collect, clean and analyse the data.
+* Notable findings included casual riders using the service more on weekends, and a significant increase in usage during the Summer months.
+* Reccomended actions included possibly discounting membership fees during Summer months, as well as placing advertisements at stations that casual riders use frequently.
+
 This case study has been completed as my capstone project for the Google data analytics certificate.
 
 In this project I have analysed data and presented insights for Cyclistic, a fictional bike share company based in Chicago, Illinois.
