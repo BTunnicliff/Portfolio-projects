@@ -389,10 +389,10 @@ crash_data_v2 %>%
   coord_flip() +
   labs(x = "Aircraft type (ordered by crash count)",
        y = "Average survival rate (%)",
-       title = "Average survival rate for top 10 largest crash-count aircraft")
+       title = "Average survival rate for largest crash-count aircraft")
 ```
 
-![](plane_crash_report_files/figure-html/unnamed-chunk-5-1.png)<!--- --->
+![](plane_crash_report_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 We can see that there is not much difference between the survival rate for the DC-3 and other planes so it does not seem like there is an issue with the DC-3 being more dangerous than other planes.
 
