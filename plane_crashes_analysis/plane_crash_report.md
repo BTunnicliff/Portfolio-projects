@@ -268,7 +268,7 @@ crash_data_v2 %>%
        x = "Year")
 ```
 
-![](plane_crash_report_files/figure-html/plane_crash_count-1.png)<!-- -->
+![](plane_crash_report_files/figure-html/plane crash count-1.png)<!-- -->
 
 From the right side of the graph, it can be seen that there is a steady decrease in the number of crashes occuring starting in the late 1990s/early 2000s, with a substantial drop in the early 2010s. This clearly shows that there are less plane crashes occuring each year.
 
@@ -313,7 +313,7 @@ crash_data_v2 %>%
        x = "Year")
 ```
 
-![](plane_crash_report_files/figure-html/fatalities_by_year-1.png)<!-- -->
+![](plane_crash_report_files/figure-html/fatalities by year-1.png)<!-- -->
 
 Overall it can be seen that there has not been much change in plane crash survival rate over the years.
 
@@ -389,7 +389,7 @@ crash_data_v2 %>%
   coord_flip() +
   labs(x = "Aircraft type (ordered by crash count)",
        y = "Average survival rate (%)",
-       title = "Average survival rate for largest crash-count aircraft")
+       title = "Average survival rate \n for top 10 largest crash-count aircraft")
 ```
 
 ![](plane_crash_report_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
