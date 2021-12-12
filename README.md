@@ -17,3 +17,5 @@ For a brief summary of each project:
 * Measured differences in behaviour for casual users and members of a fictional bike ride-share service.
 * Made reccomendations to convert casual users into members, based on the findings of the analysis.
 * Files included are the R script that I wrote for the analysis, an R markdown version of the final report, and a pdf version of the report.
+
+**I am currently re-doing this project as I am not entirely satisfied with it**
