@@ -1,6 +1,6 @@
 # Portfolio-projects
 
-This repository contains all of my data analytics portfolio projects.
+This repository contains all of my data analytics portfolio projects, I am using it as a way of demonstrating the technical skills that I have developed.
 
 For a brief summary of each project:
 
