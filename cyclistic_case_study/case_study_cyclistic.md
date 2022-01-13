@@ -226,7 +226,7 @@ all_trips_v2 %>%
        fill = "Member type")
 ```
 
-![](case_study_cyclistic_files/figure-html/ride length/number of rides week day-1.png)<!-- -->
+![](case_study_cyclistic_files/figure-html/ride_length/number_of_rides_week_day-1.png)<!-- -->
 
 ```r
 #Create a visualisation for average ride length.
@@ -245,7 +245,7 @@ all_trips_v2 %>%
        fill = "Member type")
 ```
 
-![](case_study_cyclistic_files/figure-html/ride length/number of rides week day-2.png)<!-- -->
+![](case_study_cyclistic_files/figure-html/ride_length/number_of_rides_week_day-2.png)<!-- -->
 
 These two charts show the same thing as the previous table:
 
@@ -331,7 +331,7 @@ all_trips_v2 %>%
        fill = "Member type")
 ```
 
-![](case_study_cyclistic_files/figure-html/month data-1.png)<!-- -->
+![](case_study_cyclistic_files/figure-html/month_data-1.png)<!-- -->
 
 ```r
 all_trips_v2 %>%
@@ -348,7 +348,7 @@ all_trips_v2 %>%
        fill = "Member type")
 ```
 
-![](case_study_cyclistic_files/figure-html/month data-2.png)<!-- -->
+![](case_study_cyclistic_files/figure-html/month_data-2.png)<!-- -->
 
 Several insights can be gained from these charts:
 
@@ -375,7 +375,7 @@ all_trips_v2 %>%
        fill = "Member type")
 ```
 
-![](case_study_cyclistic_files/figure-html/Hourly rides-1.png)<!-- -->
+![](case_study_cyclistic_files/figure-html/Hourly_rides-1.png)<!-- -->
 
 We can see from this chart that:
 
@@ -427,7 +427,7 @@ all_trips_v2 %>%
        y = "Number of rides")
 ```
 
-![](case_study_cyclistic_files/figure-html/start station frequency-1.png)<!-- -->
+![](case_study_cyclistic_files/figure-html/start_station_frequency-1.png)<!-- -->
 
 ```r
 all_trips_v2 %>%
@@ -446,7 +446,7 @@ all_trips_v2 %>%
        y = "Number of rides")
 ```
 
-![](case_study_cyclistic_files/figure-html/start station frequency-2.png)<!-- -->
+![](case_study_cyclistic_files/figure-html/start_station_frequency-2.png)<!-- -->
 
 Some useful insight can be gained from these charts:
 
