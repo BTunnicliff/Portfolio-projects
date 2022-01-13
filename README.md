@@ -16,5 +16,4 @@ For a brief summary of each project:
 * Capstone project for the Google data analytics certificate.
 * Measured differences in behaviour for casual users and members of a fictional bike ride-share service.
 * Made reccomendations to convert casual users into members, based on the findings of the analysis.
-* Files included are the R script that I wrote for the analysis, an R markdown version of the final report, and a pdf version of the report.
-* **I am currently re-doing this project as I am not entirely satisfied with it**
+* Files included are the R script that I wrote to create a .csv file containing all of the data, an R script to analyse and visualise the data, and a final .md report demonstrating the final findings and reccoendations from the analysis. Unfortunately the full .csv file was too large to upload.
