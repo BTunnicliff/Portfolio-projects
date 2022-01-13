@@ -10,13 +10,9 @@ This case study has been completed as my capstone project for the Google data an
 
 In this project I have analysed data and presented insights for Cyclistic, a fictional bike share company based in Chicago, Illinois.
 
-
-
 While I do believe that the project went reasonably well, there were a few things that I think I could have improved on, including:
 
 * General report presentation. I felt that some of the sections of the report looked quite messy, especially the processing and cleaning sections, I think I could improve this by either making the code more tidy, or leaving some of it out of the report.
 * I think that I still need to work on learning more about R so that I can have an easier time solving problems that may come up.
 
-The files included in this repository are:
-
-*
+I felt that there were some limitations in this project. I would have liked to see if there was a proportion of casual users that could be using the service frequently as I would say that they would be a good target for possible conversion to membership, however the is no personal identification in the dataset, so this is impossible. 
